@@ -1,4 +1,4 @@
-package edu.csumb.cst438.FinalizeService;
+package edu.csumb.cst438.finalizeservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
