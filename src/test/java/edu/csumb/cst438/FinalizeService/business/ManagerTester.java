@@ -37,27 +37,27 @@ public class ManagerTester {
     public ExpectedException expectedException = ExpectedException.none();
 
     @Test
-    public void getHeroListReturnsEmptyListWhenNullHeroesInDb () {
+    public void getProductListReturnsEmptyListWhenNullProductesInDb () {
         when(productDb.getProductData()).thenReturn(null);
-        Assert.assertEquals(null, manager.getHeroList());
+        Assert.assertEquals(null, manager.getProductList());
         
     }
 
     @Test
-    public void getHeroListReturnsExpectedResults () {
+    public void getProductListReturnsExpectedResults () {
         when(productDb.getProductData()).thenReturn(FiveStandardProductsStub());
         List<Product> expectedProducts = FiveStandardProductsStub();
-        List<Product> actualProducts = manager.getHeroList();
+        List<Product> actualProducts = manager.getProductList();
         // todo: use library or manually implement equals() for list-to-list .equals() comarison
         Assert.assertTrue(expectedProducts.get(1).getProductName().getProductName().equals(
             actualProducts.get(1).getProductName().getProductName()));
     }
 
     @Test
-    public void getHeroListPercolatesExceptionWhenThrownAtLowerLevel () {
+    public void getProductListPercolatesExceptionWhenThrownAtLowerLevel () {
         when(productDb.getProductData()).thenThrow(new RuntimeException("Test"));
         expectedException.expect(RuntimeException.class);
-        manager.getHeroList();
+        manager.getProductList();
     }
 
     private List<Product> FiveStandardProductsStub () {

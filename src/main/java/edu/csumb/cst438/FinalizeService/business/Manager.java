@@ -12,13 +12,7 @@ import edu.csumb.cst438.finalizeservice.data.ProductDbClient;
 public class Manager {
     @Autowired
     ProductDbClient productDbClient;
-
-    //TODO: use Business entities rather than api/presentation layer enteties.
-    public List<Product> getHeroList () {
-        //do some business validation
-        //call the data layer
-        //data validation
-        //return data from data layer
+    public List<Product> getProductList () {
         return null;
     }
 }
