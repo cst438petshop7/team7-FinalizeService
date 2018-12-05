@@ -45,9 +45,8 @@ public class FinalizeController {
         if (user.getCredit().getCredit() < cost) { 
             return new ResponseEntity<String>("Insufficient credit!", HttpStatus.PAYMENT_REQUIRED);
         }
-        ResponseEntity<String> userResponse = reduceCredit(username, cost);
-        HttpStatus userStatusCode = userResponse.getStatusCode();
-        if (userStatusCode != HttpStatus.OK) { return new ResponseEntity<String>("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR); }
+        User newUserData = reduceCredit(username, cost);
+        if (newUserData == null) { return new ResponseEntity<String>("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR); }
         // for (Item item : items) {
         //     ResponseEntity<String> productResponse = reduceStock(item.getId(), item.getAmount());
         //     HttpStatus productStatusCode = productResponse.getStatusCode();
@@ -83,13 +82,13 @@ public class FinalizeController {
         return reply;
     }
     // Decriments a User's credit given a username and amount to decriment
-    private ResponseEntity<String> reduceCredit(String username, double amount) {
+    private User reduceCredit(String username, double amount) {
         String uri = "https://shopdb-service.herokuapp.com/update/"+username+"/"+amount;
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> reply = restTemplate.exchange(uri,
+        ResponseEntity<User> reply = restTemplate.exchange(uri,
         HttpMethod.GET,null, 
-        new ParameterizedTypeReference<String>(){});
-        return reply;
+        new ParameterizedTypeReference<User>(){});
+        return reply.getBody();
     }
 
 }
