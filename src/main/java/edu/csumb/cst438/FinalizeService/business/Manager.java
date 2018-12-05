@@ -12,6 +12,7 @@ import edu.csumb.cst438.finalizeservice.data.ProductDbClient;
 public class Manager {
     @Autowired
     ProductDbClient productDbClient;
+
     public List<Product> getProductList () {
         return null;
     }
