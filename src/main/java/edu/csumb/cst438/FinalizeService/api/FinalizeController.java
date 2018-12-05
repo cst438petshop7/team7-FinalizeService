@@ -35,9 +35,8 @@ public class FinalizeController {
         if (user == null) {  return new ResponseEntity<String>("No user found.", HttpStatus.NOT_FOUND); }
         double cost = 0;
         for (Item item : items) {
-            System.out.println(item.getId());
             Product product = callProductDB(item.getId());
-            if (product == null) {  return new ResponseEntity<String>("No product found.", HttpStatus.NOT_FOUND); }
+            if (product == null) {  return new ResponseEntity<String>("No product found." + product, HttpStatus.NOT_FOUND); }
             cost += (product.getPrice().getPrice() * item.getAmount());
             if (product.getStock().getStock() < item.getAmount()) { 
                 return new ResponseEntity<String>("Not enough stock for: " + product.getProductName().getProductName(), HttpStatus.FORBIDDEN); 
