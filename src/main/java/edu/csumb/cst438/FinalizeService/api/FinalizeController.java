@@ -29,31 +29,32 @@ public class FinalizeController {
 
     @RequestMapping(value="/finalize/{username}", method=RequestMethod.POST)
     @ResponseBody
-    ResponseEntity<String> finalizeData(@PathVariable String username, @RequestBody List<Item> items) {
-        if (items == null) { return new ResponseEntity<String>("Shopping cart is empty!", HttpStatus.NOT_FOUND); }
-        User user = callUserDB(username);
-        if (user == null) {  return new ResponseEntity<String>("No user found.", HttpStatus.NOT_FOUND); }
-        double cost = 0;
-        for (Item item : items) {
-            Product product = callProductDB(item.getId());
-            if (product == null) {  return new ResponseEntity<String>("No product found."+item.getId(), HttpStatus.NOT_FOUND); }
-            cost += (product.getPrice().getPrice() * item.getAmount());
-            if (product.getStock().getStock() < item.getAmount()) { 
-                return new ResponseEntity<String>("Not enough stock for: " + product.getProductName().getProductName(), HttpStatus.FORBIDDEN); 
-            }
-        }
-        if (user.getCredit().getCredit() < cost) { 
-            return new ResponseEntity<String>("Insufficient credit!", HttpStatus.PAYMENT_REQUIRED);
-        }
-        ResponseEntity<String> userResponse = reduceCredit(username, cost);
-        HttpStatus userStatusCode = userResponse.getStatusCode();
-        if (userStatusCode != HttpStatus.OK) { return new ResponseEntity<String>("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR); }
-        for (Item item : items) {
-            ResponseEntity<String> productResponse = reduceStock(item.getId(), item.getAmount());
-            HttpStatus productStatusCode = productResponse.getStatusCode();
-            if (productStatusCode != HttpStatus.OK) { return new ResponseEntity<String>("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR); }
-        }
-        return new ResponseEntity<String>("Transaction successful!", HttpStatus.OK);
+    ResponseEntity<List<Item>> finalizeData(@PathVariable String username, @RequestBody List<Item> items) {
+        return new ResponseEntity<List<Item>>(items, HttpStatus.NOT_FOUND);
+        // if (items == null) { return new ResponseEntity<String>("Shopping cart is empty!", HttpStatus.NOT_FOUND); }
+        // User user = callUserDB(username);
+        // if (user == null) {  return new ResponseEntity<String>("No user found.", HttpStatus.NOT_FOUND); }
+        // double cost = 0;
+        // for (Item item : items) {
+        //     Product product = callProductDB(item.getId());
+        //     if (product == null) {  return new ResponseEntity<String>("No product found."+item.getId(), HttpStatus.NOT_FOUND); }
+        //     cost += (product.getPrice().getPrice() * item.getAmount());
+        //     if (product.getStock().getStock() < item.getAmount()) { 
+        //         return new ResponseEntity<String>("Not enough stock for: " + product.getProductName().getProductName(), HttpStatus.FORBIDDEN); 
+        //     }
+        // }
+        // if (user.getCredit().getCredit() < cost) { 
+        //     return new ResponseEntity<String>("Insufficient credit!", HttpStatus.PAYMENT_REQUIRED);
+        // }
+        // ResponseEntity<String> userResponse = reduceCredit(username, cost);
+        // HttpStatus userStatusCode = userResponse.getStatusCode();
+        // if (userStatusCode != HttpStatus.OK) { return new ResponseEntity<String>("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR); }
+        // for (Item item : items) {
+        //     ResponseEntity<String> productResponse = reduceStock(item.getId(), item.getAmount());
+        //     HttpStatus productStatusCode = productResponse.getStatusCode();
+        //     if (productStatusCode != HttpStatus.OK) { return new ResponseEntity<String>("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR); }
+        // }
+        // return new ResponseEntity<String>("Transaction successful!", HttpStatus.OK);
     }
     // Returns a User object given a username
     private User callUserDB (String username) {
