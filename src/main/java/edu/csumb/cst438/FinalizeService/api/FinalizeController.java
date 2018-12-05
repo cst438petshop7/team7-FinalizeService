@@ -45,9 +45,9 @@ public class FinalizeController {
         if (user.getCredit().getCredit() < cost) { 
             return new ResponseEntity<String>("Insufficient credit!", HttpStatus.PAYMENT_REQUIRED);
         }
-        // ResponseEntity<String> userResponse = reduceCredit(username, cost);
-        // HttpStatus userStatusCode = userResponse.getStatusCode();
-        // if (userStatusCode != HttpStatus.OK) { return new ResponseEntity<String>("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR); }
+        ResponseEntity<String> userResponse = reduceCredit(username, cost);
+        HttpStatus userStatusCode = userResponse.getStatusCode();
+        if (userStatusCode != HttpStatus.OK) { return new ResponseEntity<String>("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR); }
         // for (Item item : items) {
         //     ResponseEntity<String> productResponse = reduceStock(item.getId(), item.getAmount());
         //     HttpStatus productStatusCode = productResponse.getStatusCode();
