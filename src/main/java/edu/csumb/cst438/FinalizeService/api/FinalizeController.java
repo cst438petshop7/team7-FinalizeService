@@ -29,7 +29,7 @@ public class FinalizeController {
 
     @RequestMapping(value="/finalize/{username}", method=RequestMethod.POST)
     @ResponseBody
-    ResponseEntity<String> finalizeData(@PathVariable String username, List<Item> items) {
+    ResponseEntity<String> finalizeData(@PathVariable String username, @RequestBody List<Item> items) {
         if (items == null) { return new ResponseEntity<String>("Shopping cart is empty!", HttpStatus.NOT_FOUND); }
         User user = callUserDB(username);
         if (user == null) {  return new ResponseEntity<String>("No user found.", HttpStatus.NOT_FOUND); }
