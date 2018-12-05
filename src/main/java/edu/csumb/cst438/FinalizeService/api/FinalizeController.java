@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ public class FinalizeController {
 
     @RequestMapping(value="/finalize/{username}", method=RequestMethod.POST)
     @ResponseBody
-    ResponseEntity<String> finalizeData(@PathVariable String username, @RequestBody List<Item> items) {
+    ResponseEntity<String> finalizeData(@PathVariable String username, @ModelAttribute List<Item> items) {
         if (items == null) { return new ResponseEntity<String>("Shopping cart is empty!", HttpStatus.NOT_FOUND); }
         User user = callUserDB(username);
         if (user == null) {  return new ResponseEntity<String>("No user found.", HttpStatus.NOT_FOUND); }
