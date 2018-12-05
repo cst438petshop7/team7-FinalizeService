@@ -74,7 +74,7 @@ public class FinalizeController {
     }
     // Decriments a product's stock given a product id and amount to decriment
     private ResponseEntity<String> reduceStock(String id, int amount) {
-        String uri = "https://shopdb-service.herokuapp.com/update/"+id+"/"+amount;
+        String uri = "https://productsdb-service.herokuapp.com/update/"+id+"/"+amount;
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> reply = restTemplate.exchange(uri,
         HttpMethod.GET,null, 
