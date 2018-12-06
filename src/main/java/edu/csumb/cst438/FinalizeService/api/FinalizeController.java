@@ -54,6 +54,29 @@ public class FinalizeController {
         }
         return new ResponseEntity<String>("Transaction successful!", HttpStatus.OK);
     }
+
+    @RequestMapping(value="/reverse/{username}", method=RequestMethod.POST)
+    @ResponseBody
+    ResponseEntity<String> reverseData(@PathVariable String username, @RequestBody List<Item> items) {
+        if (items == null) { return new ResponseEntity<String>("Shopping cart is empty!", HttpStatus.NOT_FOUND); }
+        User user = callUserDB(username);
+        if (user == null) {  return new ResponseEntity<String>("No user found.", HttpStatus.NOT_FOUND); }
+        double cost = 0;
+        for (Item item : items) {
+            Product product = callProductDB(item.getId());
+            if (product == null) {  return new ResponseEntity<String>("No product found.", HttpStatus.NOT_FOUND); }
+            cost += (product.getPrice().getPrice() * item.getAmount());
+        }
+        User newUserData = increaseCredit(username, cost);
+        if (newUserData == null) { return new ResponseEntity<String>("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR); }
+        for (Item item : items) {
+            ResponseEntity<String> productResponse = increaseStock(item.getId(), item.getAmount());
+            HttpStatus productStatusCode = productResponse.getStatusCode();
+            if (productStatusCode != HttpStatus.OK) { return new ResponseEntity<String>("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR); }
+        }
+        return new ResponseEntity<String>("Transaction reversed successfully!", HttpStatus.OK);
+    }
+
     // Returns a User object given a username
     private User callUserDB (String username) {
         String uri = "https://shopdb-service.herokuapp.com/username/"+username;
@@ -84,6 +107,24 @@ public class FinalizeController {
     // Decriments a User's credit given a username and amount to decriment
     private User reduceCredit(String username, double amount) {
         String uri = "https://shopdb-service.herokuapp.com/update/"+username+"/"+amount;
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<User> reply = restTemplate.exchange(uri,
+        HttpMethod.GET,null, 
+        new ParameterizedTypeReference<User>(){});
+        return reply.getBody();
+    }
+    // Increments a product's stock given a product id and amount to increment
+    private ResponseEntity<String> increaseStock(String id, int amount) {
+        String uri = "https://productsdb-service.herokuapp.com/increase/"+id+"/"+amount;
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> reply = restTemplate.exchange(uri,
+        HttpMethod.GET,null, 
+        new ParameterizedTypeReference<String>(){});
+        return reply;
+    }
+    // Increments a User's credit given a username and amount to increment
+    private User increaseCredit(String username, double amount) {
+        String uri = "https://shopdb-service.herokuapp.com/increase/"+username+"/"+amount;
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<User> reply = restTemplate.exchange(uri,
         HttpMethod.GET,null, 
